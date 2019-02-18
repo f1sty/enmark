@@ -3,35 +3,56 @@ defmodule Enmark.Parser.CB do
   alias Enmark.Product
 
   def parse(ws) do
-    with title_oid <- query(ws, ".js-product-name"),
-         reviews_oid <- query(ws, ".review-rating__reviews"),
-         rating_oid <- query(ws, ".review-rating__score-meter"),
-         price_oid <- query(ws, ".sales-price__current"),
-         images_urls_oid <- query(ws, ".product-media-gallery") do
-      %Product{
-        title: inner_text(ws, title_oid),
-        rating: inner_text(ws, rating_oid),
-        reviews: inner_text(ws, reviews_oid),
-        price: inner_text(ws, price_oid),
-        images_urls: get_images_urls(ws, images_urls_oid)
-      }
-    end
+    %Product{
+      title: get_title(ws),
+      rating: get_rating(ws),
+      reviews: get_reviews(ws),
+      price: get_price(ws),
+      images_urls: get_images_urls(ws)
+    }
   end
 
-  def inner_text(ws, oid) do
+  def get_title(ws) do
     ws
-    |> call_js_func(oid, "el => el.innerText")
+    |> query(".js-product-name")
+    |> inner_text(ws)
+  end
+
+  def get_rating(ws) do
+    ws
+    |> query(".review-rating__score-meter")
+    |> inner_text(ws)
+  end
+
+  def get_reviews(ws) do
+    ws
+    |> query(".review-rating__reviews")
+    |> inner_text(ws)
+  end
+
+  def get_price(ws) do
+    ws
+    |> query(".sales-price__current")
+    |> inner_text(ws)
+  end
+
+  def get_images_urls(ws) do
+    ws
+    |> query(".product-media-gallery")
+    |> call_js_func(ws, "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()")
+    |> get_in(~w/result value/)
+    |> String.split(",")
+  end
+
+  def inner_text(oid, ws) do
+    oid
+    |> call_js_func(ws, "el => el.innerText")
     |> get_in(~w/result value/)
     |> String.trim()
   end
 
-  def get_images_urls(ws, oid) do
-    ws
-    |> call_js_func(oid, "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()")
-    |> get_in(~w/result value/)
-  end
 
-  def call_js_func(ws, oid, func_declaretion) do
+  def call_js_func(oid, ws, func_declaretion) do
     {:ok, %{"result" => result}} =
       Runtime.callFunctionOn(ws, %{
         functionDeclaration: func_declaretion,
