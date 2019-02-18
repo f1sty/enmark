@@ -11,12 +11,12 @@ defmodule Enmark.Product do
   /a
 
   @type t :: %__MODULE__{
-    rating: nil | binary,
-    reviews: nil | integer,
-    title: nil | binary,
-    images_urls: nil | list(binary),
-    price: nil | float
-  }
+          rating: nil | binary,
+          reviews: nil | integer,
+          title: nil | binary,
+          images_urls: nil | list(binary),
+          price: nil | float
+        }
   @max_demand_per_page 1
   @timeout 5000
 

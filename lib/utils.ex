@@ -1,5 +1,4 @@
 defmodule Enmark.Utils do
-
   alias ChromeRemoteInterface.RPC.Runtime
 
   def inner_text(oid, ws) do
@@ -37,5 +36,4 @@ defmodule Enmark.Utils do
     result
     |> get_in(~w/result objectId/)
   end
-
 end

@@ -59,5 +59,4 @@ defmodule Enmark.Parser.CB do
     |> get_in(~w/result value/)
     |> String.split(",")
   end
-
 end
