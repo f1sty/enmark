@@ -1,6 +1,5 @@
 defmodule Enmark do
   alias ChromeRemoteInterface.Server
-  # alias Enmark.Tasks
 
   use GenStage
 

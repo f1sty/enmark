@@ -55,7 +55,7 @@ defmodule Enmark.Product do
       end
 
     product
-    |> Jason.encode!()
+    |> Jason.encode!(pretty: true)
     |> IO.puts()
   end
 end
