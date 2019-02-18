@@ -6,7 +6,7 @@ defmodule Enmark.Parser.CB do
     with title_oid <- query(ws, ".js-product-name"),
          reviews_oid <- query(ws, ".review-rating__reviews"),
          rating_oid <- query(ws, ".review-rating__score-meter"),
-         price_oid <- query(ws, ".js-sales-price"),
+         price_oid <- query(ws, ".sales-price__current"),
          images_urls_oid <- query(ws, ".product-media-gallery") do
       %Product{
         title: inner_text(ws, title_oid),
@@ -27,10 +27,7 @@ defmodule Enmark.Parser.CB do
 
   def get_images_urls(ws, oid) do
     ws
-    |> call_js_func(
-      oid,
-      "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()"
-    )
+    |> call_js_func(oid, "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()")
     |> get_in(~w/result value/)
   end
 
