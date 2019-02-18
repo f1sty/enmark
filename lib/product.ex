@@ -1,4 +1,5 @@
 defmodule Enmark.Product do
+  @moduledoc false
   @derive {Jason.Encoder, except: [:__struct__]}
 
   defstruct rating: 0,
@@ -13,6 +14,9 @@ defmodule Enmark.Product do
   alias ChromeRemoteInterface.{Session, PageSession}
   alias ChromeRemoteInterface.RPC.Page
   alias Enmark.Parser.CB, as: Parser
+
+  require Logger
+
   use GenStage
 
   def start_link(server) do
@@ -33,7 +37,8 @@ defmodule Enmark.Product do
   end
 
   def handle_events(urls, _from, ws) do
-    Enum.map(urls, &process(&1, ws))
+    # NOTE: using map to ease possible later use.
+    _processed = Enum.map(urls, &process(&1, ws))
 
     {:noreply, [], ws}
   end
@@ -51,7 +56,7 @@ defmodule Enmark.Product do
         {:chrome_remote_interface, "Page.domContentEventFired", _} ->
           Parser.parse(ws)
       after
-        @timeout -> IO.inspect("#{ws} on #{url} timeouted!")
+        @timeout -> Logger.warn("#{ws} on #{url} timeouted.")
       end
 
     product

@@ -1,4 +1,6 @@
 defmodule Enmark.Parser.CB do
+  @moduledoc false
+
   alias ChromeRemoteInterface.RPC.Runtime
   alias Enmark.Product
 
@@ -47,7 +49,10 @@ defmodule Enmark.Parser.CB do
   def get_images_urls(ws) do
     ws
     |> query(".product-media-gallery")
-    |> call_js_func(ws, "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()")
+    |> call_js_func(
+      ws,
+      "el => JSON.parse(el.getAttribute('data-component'))[3].options.images.map((im) => im.image_url).toString()"
+    )
     |> get_in(~w/result value/)
     |> String.split(",")
   end
@@ -58,7 +63,6 @@ defmodule Enmark.Parser.CB do
     |> get_in(~w/result value/)
     |> String.trim()
   end
-
 
   def call_js_func(oid, ws, func_declaretion) do
     {:ok, %{"result" => result}} =

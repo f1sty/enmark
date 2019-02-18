@@ -23,7 +23,8 @@ defmodule Enmark.MixProject do
     [
       {:jason, "~> 1.1"},
       {:gen_stage, "~> 0.14"},
-      {:chrome_remote_interface, github: "f1sty/chrome-remote-interface", branch: "master"}
+      {:chrome_remote_interface, github: "f1sty/chrome-remote-interface", branch: "master"},
+      {:credo, "~> 1.0", only: [:dev, :test]}
     ]
   end
 end

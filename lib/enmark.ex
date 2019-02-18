@@ -1,4 +1,6 @@
 defmodule Enmark do
+  @moduledoc false
+
   alias ChromeRemoteInterface.Server
 
   use GenStage
