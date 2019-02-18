@@ -11,7 +11,7 @@ defmodule Enmark.Product do
   /a
 
   @type t :: %__MODULE__{
-          rating: nil | binary,
+          rating: nil | integer,
           reviews: nil | integer,
           title: nil | binary,
           images_urls: nil | list(binary),

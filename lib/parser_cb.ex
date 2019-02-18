@@ -27,6 +27,15 @@ defmodule Enmark.Parser.CB do
     ws
     |> query(".review-rating__score-meter")
     |> inner_text(ws)
+    |> String.split()
+    |> Enum.take_every(2)
+    |> Enum.map(fn num ->
+      {val, _rest} = Float.parse(num)
+      val
+    end)
+    |> Enum.reduce(&(&2 / &1))
+    |> Kernel.*(100)
+    |> round()
   end
 
   def get_reviews(ws) do
