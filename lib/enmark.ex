@@ -1,65 +1,24 @@
 defmodule Enmark do
-  alias ChromeRemoteInterface.{Server, Session, PageSession}
-  alias ChromeRemoteInterface.RPC.{Runtime, Page}
-  alias Enmark.Tasks
+  alias ChromeRemoteInterface.Server
+  # alias Enmark.Tasks
+
+  use GenStage
 
   @urls []
 
-  def test() do
-    @urls
-    |> Enum.shuffle()
-    |> Enum.take(5)
-    |> batch()
+  @pages 5
+
+  def start_link(urls \\ @urls) do
+    GenStage.start_link(__MODULE__, urls, name: Enmark.UrlProducer)
   end
 
-  def batch(urls \\ @urls) do
-    server = Server.new()
-
-    Task.Supervisor.async_stream(Tasks, urls, __MODULE__, :navigate, [server])
-    |> Enum.to_list()
+  def init(urls) do
+    Enum.each(1..@pages, fn _ -> Enmark.Product.start_link(Server.new()) end)
+    {:producer, urls}
   end
 
-  def navigate(url, server) do
-    {:ok, ws} = server |> Session.new_page!() |> PageSession.start_link()
-    Page.enable(ws)
-    PageSession.subscribe(ws, "Page.domContentEventFired")
-    Page.navigate(ws, %{url: url})
-
-    %{"result" => %{"objectId" => oid}} =
-      receive do
-        {:chrome_remote_interface, "Page.domContentEventFired", _} ->
-          query(ws, ".js-product-name")
-      after
-        5000 -> IO.inspect("timeout")
-      end
-
-    inner_text(ws, oid)
-  end
-
-  def inner_text(ws, oid) do
-    {:ok, %{"result" => result}} =
-      Runtime.callFunctionOn(ws, %{
-        functionDeclaration: "function (elem) { return elem.innerText; }",
-        objectId: oid,
-        arguments: [%{objectId: oid}]
-      })
-
-    result
-  end
-
-  def query(ws, query) do
-    {:ok, %{"result" => result}} =
-      ws
-      |> Runtime.evaluate(%{expression: "document.querySelector('#{query}')"})
-
-    result
-  end
-
-  def query_all(ws, query) do
-    {:ok, %{"result" => result}} =
-      ws
-      |> Runtime.evaluate(%{expression: "document.querySelectorAll('#{query}')"})
-
-    result
+  def handle_demand(demand, urls) when demand > 0 do
+    {events, urls} = Enum.split(urls, demand)
+    {:noreply, events, urls}
   end
 end
