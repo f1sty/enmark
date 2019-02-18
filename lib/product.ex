@@ -2,12 +2,21 @@ defmodule Enmark.Product do
   @moduledoc false
   @derive {Jason.Encoder, except: [:__struct__]}
 
-  defstruct rating: 0,
-            reviews: 0,
-            title: "",
-            images_urls: [],
-            price: 0
+  defstruct ~w/
+    rating
+    reviews
+    title
+    images_urls
+    price
+  /a
 
+  @type t :: %__MODULE__{
+    rating: nil | binary,
+    reviews: nil | integer,
+    title: nil | binary,
+    images_urls: nil | list(binary),
+    price: nil | float
+  }
   @max_demand_per_page 1
   @timeout 5000
 
