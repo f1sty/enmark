@@ -28,12 +28,20 @@ defmodule Enmark.Parser.CB do
     ws
     |> query(".review-rating__reviews")
     |> inner_text(ws)
+    |> String.split()
+    |> hd()
+    |> String.to_integer()
   end
 
   def get_price(ws) do
     ws
     |> query(".sales-price__current")
     |> inner_text(ws)
+    |> String.replace("-", "00")
+    |> String.replace(".", "")
+    |> String.to_float()
+    |> Kernel.*(100)
+    |> Float.round(2)
   end
 
   def get_images_urls(ws) do
