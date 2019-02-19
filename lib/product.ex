@@ -33,6 +33,8 @@ defmodule Enmark.Product do
   end
 
   def init(server) do
+    IO.inspect(server)
+
     {:ok, ws} =
       server
       |> Session.new_page!()
