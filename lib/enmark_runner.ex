@@ -5,7 +5,7 @@ defmodule Enmark.Runner do
 
   @urls []
 
-  @pages 10
+  @pages 5
 
   def start_link(urls \\ @urls) do
     Supervisor.start_link(__MODULE__, urls, name: __MODULE__)
