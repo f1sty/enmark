@@ -7,7 +7,7 @@ defmodule Enmark.Product do
     reviews
     title
     images_urls
-    price
+    prices
   /a
 
   @type t :: %__MODULE__{
@@ -15,7 +15,7 @@ defmodule Enmark.Product do
           reviews: nil | integer,
           title: nil | binary,
           images_urls: nil | list(binary),
-          price: nil | float
+          prices: nil | float
         }
   @max_demand_per_page 1
   @timeout 5000
@@ -23,6 +23,7 @@ defmodule Enmark.Product do
   alias ChromeRemoteInterface.{Session, PageSession}
   alias ChromeRemoteInterface.RPC.Page
   alias Enmark.Parser.CB, as: Parser
+  # alias Enmark.Parser.Amazon, as: Parser
 
   require Logger
 
