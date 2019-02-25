@@ -21,9 +21,10 @@ defmodule Enmark.Product do
   @timeout 5000
 
   alias ChromeRemoteInterface.{Session, PageSession}
-  alias ChromeRemoteInterface.RPC.Page
-  alias Enmark.Parser.CB, as: Parser
+  alias ChromeRemoteInterface.RPC.{Page, Network}
+  # alias Enmark.Parser.AE, as: Parser
   # alias Enmark.Parser.Amazon, as: Parser
+  alias Enmark.Parser.CB, as: Parser
 
   require Logger
 
@@ -59,6 +60,7 @@ defmodule Enmark.Product do
   end
 
   def process(url, ws) do
+    Network.setCacheDisabled(ws, %{cacheDisabled: true})
     Page.navigate(ws, %{url: url})
 
     product =

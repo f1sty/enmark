@@ -4,9 +4,6 @@ defmodule Enmark.Parser.CB do
   use Enmark.Parser
 
   def parse(ws) do
-    # NOTE: keyword options here imply selectors for corresponding fields in %Enmark.Product{}.
-    # Also none of these options are required. In default implementation sets matching field in
-    # %Enmark.Product{} to nil, if one ommited.
     parse(ws,
       title: ".js-product-name",
       rating: ".review-rating__score-meter",

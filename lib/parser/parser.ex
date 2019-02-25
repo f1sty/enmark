@@ -8,6 +8,9 @@ defmodule Enmark.Parser do
       import Enmark.Utils
 
       def parse(ws, args) do
+        # NOTE: keyword options here imply selectors for corresponding fields in %Enmark.Product{}.
+        # Also none of these options are required. In default implementation sets matching field in
+        # %Enmark.Product{} to nil, if one ommited.
         %Product{
           title: get_title(ws, args[:title]),
           rating: get_rating(ws, args[:rating]),
@@ -37,17 +40,22 @@ defmodule Enmark.Parser do
       end
 
       def get_reviews(ws, selector) do
-        ws
-        |> inner_text(selector)
-        |> String.split()
-        |> hd()
-        |> String.to_integer()
+        with text_reviews <- inner_text(ws, selector) do
+          ~r/\D*/
+          |> Regex.replace(text_reviews, "")
+          |> String.to_integer()
+        end
       end
 
       def get_prices(ws, selector) do
-        ws
-        |> inner_text(selector)
-        |> List.wrap()
+        with text_price <- inner_text(ws, selector) |> String.replace(",", ".") do
+          ~r/(\p{Pd}|\p{Sc})*/
+          |> Regex.replace(text_price, "")
+          |> to_floats_stream()
+          |> Stream.map(&Kernel.*(&1, 100))
+          |> Stream.map(&round/1)
+          |> Enum.to_list()
+        end
       end
 
       def get_images_urls(ws, expr), do: eval(ws, expr)

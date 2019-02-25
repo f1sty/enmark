@@ -10,9 +10,8 @@ defmodule Enmark.Parser.Amazon do
       reviews: "#acrCustomerReviewText",
       prices: "#priceblock_ourprice",
       images_parser: """
-      document.querySelectorAll('.a-button-thumbnail').forEach(el => el.click());
-      let tmp = document.querySelectorAll('img[class*=a-stretch].a-dynamic-image');
-      Array.from(tmp).map(el => el.src);
+      $$('.a-button-thumbnail').forEach(el => el.click());
+      Array.from($$('img[class*=a-stretch].a-dynamic-image')).map(el => el.src);
       """
     )
   end
@@ -21,16 +20,5 @@ defmodule Enmark.Parser.Amazon do
     ws
     |> eval(expr)
     |> Enum.map(&Regex.replace(~r/\._.+_\./, &1, "."))
-  end
-
-  def get_prices(ws, selector) do
-    with text_price <- inner_text(ws, selector) do
-      ~r/(\$|-)*/
-      |> Regex.replace(text_price, "")
-      |> to_floats_stream()
-      |> Stream.map(&Kernel.*(&1, 100))
-      |> Stream.map(&round/1)
-      |> Enum.to_list()
-    end
   end
 end
