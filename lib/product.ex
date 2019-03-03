@@ -24,7 +24,8 @@ defmodule Enmark.Product do
   alias ChromeRemoteInterface.RPC.{Page, Network}
   # alias Enmark.Parser.AE, as: Parser
   # alias Enmark.Parser.Amazon, as: Parser
-  alias Enmark.Parser.CB, as: Parser
+  # alias Enmark.Parser.CB, as: Parser
+  alias Enmark.Parser.Ebay, as: Parser
 
   require Logger
 

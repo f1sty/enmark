@@ -49,6 +49,7 @@ defmodule Enmark.Parser do
 
       def get_prices(ws, selector) do
         with text_price <- inner_text(ws, selector) |> String.replace(",", ".") do
+          # matches dash punctuation and currency signs (see: http://erlang.org/doc/man/re.html#sect3)
           ~r/(\p{Pd}|\p{Sc})*/
           |> Regex.replace(text_price, "")
           |> to_floats_stream()
