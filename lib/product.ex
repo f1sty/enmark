@@ -23,9 +23,9 @@ defmodule Enmark.Product do
   alias ChromeRemoteInterface.{Session, PageSession}
   alias ChromeRemoteInterface.RPC.{Page, Network}
   # alias Enmark.Parser.AE, as: Parser
-  # alias Enmark.Parser.Amazon, as: Parser
+  alias Enmark.Parser.Amazon, as: Parser
   # alias Enmark.Parser.CB, as: Parser
-  alias Enmark.Parser.Ebay, as: Parser
+  # alias Enmark.Parser.Ebay, as: Parser
 
   require Logger
 
@@ -62,6 +62,7 @@ defmodule Enmark.Product do
 
   def process(url, ws) do
     Network.setCacheDisabled(ws, %{cacheDisabled: true})
+    Network.clearBrowserCache(ws)
     Page.navigate(ws, %{url: url})
 
     product =

@@ -3,7 +3,10 @@ defmodule Enmark.Runner do
 
   use Supervisor
 
-  @urls []
+  @urls [
+    "https://www.amazon.com/CLARKS-Originals-Desert-London-Leather/dp/B00MY2KTP8/",
+    "https://www.amazon.com/Excalibur-3926TB-Dehydrator-Temperature-Dehydration/dp/B01M9CHYG6/"
+  ]
 
   @pages 5
 

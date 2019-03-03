@@ -11,7 +11,7 @@ defmodule Enmark.Parser.Amazon do
       prices: "#priceblock_ourprice",
       images_parser: """
       $$('.a-button-thumbnail').forEach(el => el.click());
-      Array.from($$('img[class*=a-stretch].a-dynamic-image')).map(el => el.src);
+      $$('img[class*=a-stretch].a-dynamic-image').map(el => el.src);
       """
     )
   end
